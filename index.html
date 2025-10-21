@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理健康综合测评 | 50题专业评估</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-container {
+            background: #f0f0f0;
+            height: 10px;
+            width: 100%;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .question-number {
+            font-size: 0.9rem;
+            color: #6a11cb;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            border-color: #6a11cb;
+            background-color: #f9f7ff;
+        }
+        
+        .option.selected {
+            border-color: #6a11cb;
+            background-color: #f0ebff;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #prev-btn, #next-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        #prev-btn:hover, #next-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        #submit-btn {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            color: white;
+        }
+        
+        #submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 176, 155, 0.3);
+        }
+        
+        .result-container {
+            display: none;
+            padding: 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #6a11cb;
+        }
+        
+        .result-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2575fc;
+            margin: 20px 0;
+        }
+        
+        .score-visualization {
+            margin: 30px 0;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border-radius: 20px;
+            transition: width 1s ease;
+        }
+        
+        .score-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .result-description {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            text-align: left;
+        }
+        
+        .result-suggestions {
+            background: #f9f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .suggestion-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
+        
+        .suggestion-list {
+            padding-left: 20px;
+        }
+        
+        .suggestion-list li {
+            margin-bottom: 10px;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .page-info {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>心理健康综合测评</h1>
+            <p class="subtitle">通过50个专业问题，全面评估您的心理健康状况，获得个性化建议</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="content">
+            <div id="question-section">
+                <!-- 问题页面将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="result-container" id="result-section">
+                <h2 class="result-title">您的测评结果</h2>
+                <div class="result-score" id="result-score">0分</div>
+                
+                <div class="score-visualization">
+                    <div class="score-bar" id="score-bar"></div>
+                </div>
+                <div class="score-labels">
+                    <span>健康 (0-50)</span>
+                    <span>轻度困扰 (51-75)</span>
+                    <span>中度困扰 (76-100)</span>
+                    <span>重度困扰 (101-150)</span>
+                </div>
+                
+                <p class="result-description" id="result-description"></p>
+                
+                <div class="result-suggestions">
+                    <h3 class="suggestion-title">个性化建议</h3>
+                    <ul class="suggestion-list" id="suggestion-list">
+                        <!-- 建议将通过JavaScript动态生成 -->
+                    </ul>
+                </div>
+                
+                <button class="restart-btn" id="restart-btn">重新测试</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>温馨提示：本测评仅供参考，不能替代专业心理咨询。如有需要，请寻求专业帮助。</p>
+        </footer>
+    </div>
+
+    <script>
+        // 生成50个测评问题
+        function generateQuestions() {
+            const questionTemplates = [
+                "您感到情绪低落、沮丧或绝望的频率如何？",
+                "您对以往喜欢做的事情失去兴趣或乐趣的频率如何？",
+                "您感到疲劳或没有精力的频率如何？",
+                "您的食欲有明显变化（增加或减少）吗？",
+                "您感到难以集中注意力（如阅读或看电视时）的频率如何？",
+                "您对自己的评价如何？是否感到自己很失败或让家人失望？",
+                "您有睡眠问题（难以入睡、睡眠不安或睡得太多）吗？",
+                "您感到焦虑或紧张的频率如何？",
+                "您感到恐慌或害怕的频率如何？",
+                "您容易生气或发脾气的频率如何？",
+                "您对未来感到悲观或无望的频率如何？",
+                "您感到孤独或被孤立的频率如何？",
+                "您对社交活动感到不适或回避的频率如何？",
+                "您感到身体不适（如头痛、胃痛）但找不到明确原因的频率如何？",
+                "您感到心跳加速、呼吸困难的频率如何？",
+                "您感到肌肉紧张或身体僵硬的频率如何？",
+                "您有强迫性思维或行为的频率如何？",
+                "您有创伤性记忆闪回的频率如何？",
+                "您有回避与创伤相关的人、地点或活动的频率如何？",
+                "您感到过度警觉或容易受惊吓的频率如何？",
+                "您感到自我价值感低的频率如何？",
+                "您感到内疚或自责的频率如何？",
+                "您感到无助或无力的频率如何？",
+                "您感到生活没有意义的频率如何？",
+                "您有自伤或自杀念头的频率如何？",
+                "您感到工作或学习效率下降的频率如何？",
+                "您感到记忆力减退的频率如何？",
+                "您感到决策困难的频率如何？",
+                "您感到对日常活动失去兴趣的频率如何？",
+                "您感到生活节奏被打乱的频率如何？",
+                "您感到与家人关系紧张的频率如何？",
+                "您感到与朋友关系疏远的频率如何？",
+                "您感到在社交场合不自在的频率如何？",
+                "您感到被人误解或不被理解的频率如何？",
+                "您感到难以表达自己感受的频率如何？",
+                "您感到难以信任他人的频率如何？",
+                "您感到被他人评判或批评的频率如何？",
+                "您感到难以设定个人边界的频率如何？",
+                "您感到难以拒绝他人请求的频率如何？",
+                "您感到过度担心他人看法的频率如何？",
+                "您感到生活压力过大的频率如何？",
+                "您感到难以应对变化的频率如何？",
+                "您感到难以放松的频率如何？",
+                "您感到对未来不确定的恐惧频率如何？",
+                "您感到身体疲惫但难以休息的频率如何？",
+                "您感到饮食不规律的频率如何？",
+                "您感到缺乏运动动力的频率如何？",
+                "您感到对娱乐活动失去兴趣的频率如何？",
+                "您感到生活缺乏目标的频率如何？",
+                "您感到难以找到生活意义的频率如何？"
+            ];
+            
+            const questions = [];
+            const options = [
+                { text: "几乎没有", score: 0 },
+                { text: "偶尔", score: 1 },
+                { text: "经常", score: 2 },
+                { text: "几乎总是", score: 3 }
+            ];
+            
+            for (let i = 0; i < 50; i++) {
+                questions.push({
+                    text: questionTemplates[i],
+                    options: [...options]
+                });
+            }
+            
+            return questions;
+        }
+
+        // 结果描述和建议
+        const results = [
+            {
+                scoreRange: [0, 50],
+                title: "心理健康状态良好",
+                description: "根据您的回答，您目前处于良好的心理健康状态。您能够有效应对生活中的压力，情绪稳定，对生活充满热情。",
+                suggestions: [
+                    "继续保持健康的生活习惯和积极的心态",
+                    "定期进行体育锻炼，保持身体和心理健康",
+                    "与家人和朋友保持良好的人际关系",
+                    "学习新的技能或爱好，丰富生活内容",
+                    "保持工作和生活的平衡",
+                    "定期进行自我反思和情绪检查"
+                ]
+            },
+            {
+                scoreRange: [51, 75],
+                title: "轻度情绪困扰",
+                description: "根据您的回答，您目前有一些轻微的情绪困扰。这可能与近期生活中的压力事件有关，但您总体上能够应对。",
+                suggestions: [
+                    "尝试一些放松技巧，如深呼吸、冥想或瑜伽",
+                    "确保充足的睡眠和均衡的饮食",
+                    "与信任的人分享您的感受",
+                    "安排时间从事您喜欢的活动",
+                    "学习压力管理技巧",
+                    "考虑减少不必要的生活压力源"
+                ]
+            },
+            {
+                scoreRange: [76, 100],
+                title: "中度情绪困扰",
+                description: "根据您的回答，您目前处于中等程度的情绪困扰状态。您可能在某些方面感到困扰，影响了您的日常生活。",
+                suggestions: [
+                    "考虑寻求专业心理咨询师的帮助",
+                    "练习正念冥想，帮助管理负面情绪",
+                    "建立健康的生活作息，确保充足的休息",
+                    "减少不必要的压力源，学会说'不'",
+                    "参加支持小组或心理健康教育活动",
+                    "尝试记录情绪日记，了解情绪变化模式"
+                ]
+            },
+            {
+                scoreRange: [101, 150],
+                title: "重度情绪困扰",
+                description: "根据您的回答，您目前处于较为严重的情绪困扰状态。这些症状可能已经显著影响了您的日常生活和功能。",
+                suggestions: [
+                    "强烈建议尽快寻求专业心理健康服务",
+                    "与家人或朋友谈论您的状况，寻求支持",
+                    "如有自伤或自杀念头，请立即联系心理危机干预热线",
+                    "避免单独应对，建立支持网络",
+                    "考虑暂时调整工作或学习安排，减轻压力",
+                    "遵循专业医生的治疗建议，按时服药（如需要）"
+                ]
+            }
+        ];
+
+        // 初始化变量
+        let currentPage = 0;
+        const questionsPerPage = 5;
+        const questions = generateQuestions();
+        const totalPages = Math.ceil(questions.length / questionsPerPage);
+        let answers = new Array(questions.length).fill(null);
+        let totalScore = 0;
+
+        // DOM元素
+        const questionSection = document.getElementById('question-section');
+        const progressBarEl = document.getElementById('progress-bar');
+        const resultSection = document.getElementById('result-section');
+        const resultScoreEl = document.getElementById('result-score');
+        const scoreBarEl = document.getElementById('score-bar');
+        const resultDescriptionEl = document.getElementById('result-description');
+        const suggestionListEl = document.getElementById('suggestion-list');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 初始化测评
+        function initAssessment() {
+            createQuestionPages();
+            showPage(currentPage);
+            updateProgressBar();
+        }
+
+        // 创建问题页面
+        function createQuestionPages() {
+            questionSection.innerHTML = '';
+            
+            for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+                const pageEl = document.createElement('div');
+                pageEl.className = `page ${pageIndex === 0 ? 'active' : ''}`;
+                pageEl.id = `page-${pageIndex}`;
+                
+                // 添加页面信息
+                const pageInfoEl = document.createElement('div');
+                pageInfoEl.className = 'page-info';
+                pageInfoEl.textContent = `第 ${pageIndex + 1} 页，共 ${totalPages} 页`;
+                pageEl.appendChild(pageInfoEl);
+                
+                const startIndex = pageIndex * questionsPerPage;
+                const endIndex = Math.min(startIndex + questionsPerPage, questions.length);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    const question = questions[i];
+                    const questionEl = document.createElement('div');
+                    questionEl.className = 'question-container';
+                    
+                    questionEl.innerHTML = `
+                        <div class="question-number">问题 ${i + 1}/${questions.length}</div>
+                        <h3 class="question-text">${question.text}</h3>
+                        <div class="options-container" id="options-${i}">
+                            <!-- 选项将通过JavaScript动态生成 -->
+                        </div>
+                    `;
+                    
+                    pageEl.appendChild(questionEl);
+                }
+                
+                // 添加导航按钮
+                const buttonsEl = document.createElement('div');
+                buttonsEl.className = 'buttons';
+                
+                buttonsEl.innerHTML = `
+                    <button id="prev-btn-${pageIndex}" ${pageIndex === 0 ? 'style="visibility: hidden;"' : ''}>上一页</button>
+                    <button id="next-btn-${pageIndex}" ${pageIndex === totalPages - 1 ? 'style="display: none;"' : ''}>下一页</button>
+                    <button id="submit-btn-${pageIndex}" ${pageIndex === totalPages - 1 ? '' : 'style="display: none;"'}>查看结果</button>
+                `;
+                
+                pageEl.appendChild(buttonsEl);
+                questionSection.appendChild(pageEl);
+                
+                // 为当前页面的问题添加选项
+                for (let i = startIndex; i < endIndex; i++) {
+                    addOptionsToQuestion(i);
+                }
+                
+                // 添加事件监听
+                const prevBtn = document.getElementById(`prev-btn-${pageIndex}`);
+                const nextBtn = document.getElementById(`next-btn-${pageIndex}`);
+                const submitBtn = document.getElementById(`submit-btn-${pageIndex}`);
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        if (currentPage > 0) {
+                            currentPage--;
+                            showPage(currentPage);
+                            updateProgressBar();
+                        }
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        if (isPageComplete(pageIndex)) {
+                            currentPage++;
+                            showPage(currentPage);
+                            updateProgressBar();
+                        } else {
+                            alert('请完成本页所有问题后再继续');
+                        }
+                    });
+                }
+                
+                if (submitBtn) {
+                    submitBtn.addEventListener('click', () => {
+                        if (isPageComplete(pageIndex)) {
+                            submitAssessment();
+                        } else {
+                            alert('请完成本页所有问题后再提交');
+                        }
+                    });
+                }
+            }
+        }
+
+        // 为问题添加选项
+        function addOptionsToQuestion(questionIndex) {
+            const question = questions[questionIndex];
+            const optionsContainer = document.getElementById(`options-${questionIndex}`);
+            
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, optionIndex) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                if (answers[questionIndex] === optionIndex) {
+                    optionEl.classList.add('selected');
+                }
+                
+                optionEl.innerHTML = `
+                    <input type="radio" id="option-${questionIndex}-${optionIndex}" name="option-${questionIndex}" value="${optionIndex}" ${answers[questionIndex] === optionIndex ? 'checked' : ''}>
+                    <label for="option-${questionIndex}-${optionIndex}">${option.text}</label>
+                `;
+                
+                optionEl.addEventListener('click', () => {
+                    selectOption(questionIndex, optionIndex);
+                });
+                
+                optionsContainer.appendChild(optionEl);
+            });
+        }
+
+        // 选择选项
+        function selectOption(questionIndex, optionIndex) {
+            answers[questionIndex] = optionIndex;
+            addOptionsToQuestion(questionIndex); // 刷新选项显示
+            
+            // 自动保存到本地存储
+            localStorage.setItem('psychAssessmentAnswers', JSON.stringify(answers));
+            
+            // 更新进度条
+            updateProgressBar();
+        }
+
+        // 显示指定页面
+        function showPage(pageIndex) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            const currentPageEl = document.getElementById(`page-${pageIndex}`);
+            if (currentPageEl) {
+                currentPageEl.classList.add('active');
+            }
+            
+            // 更新按钮状态
+            updateButtons();
+        }
+
+        // 检查页面是否完成
+        function isPageComplete(pageIndex) {
+            const startIndex = pageIndex * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, questions.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                if (answers[i] === null) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const answeredCount = answers.filter(answer => answer !== null).length;
+            const progress = (answeredCount / questions.length) * 100;
+            progressBarEl.style.width = `${progress}%`;
+        }
+
+        // 更新按钮状态
+        function updateButtons() {
+            // 实现可以根据需要添加
+        }
+
+        // 提交测评
+        function submitAssessment() {
+            // 计算总分
+            totalScore = 0;
+            answers.forEach((answerIndex, questionIndex) => {
+                if (answerIndex !== null) {
+                    totalScore += questions[questionIndex].options[answerIndex].score;
+                }
+            });
+            
+            // 找到对应的结果
+            let result = results[0];
+            for (let i = 0; i < results.length; i++) {
+                if (totalScore >= results[i].scoreRange[0] && totalScore <= results[i].scoreRange[1]) {
+                    result = results[i];
+                    break;
+                }
+            }
+            
+            // 显示结果
+            resultScoreEl.textContent = `${totalScore}分`;
+            
+            // 更新分数条
+            const scorePercentage = Math.min(totalScore / 150 * 100, 100);
+            scoreBarEl.style.width = `${scorePercentage}%`;
+            
+            resultDescriptionEl.textContent = result.description;
+            
+            // 显示建议
+            suggestionListEl.innerHTML = '';
+            result.suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion;
+                suggestionListEl.appendChild(li);
+            });
+            
+            // 切换到结果页面
+            questionSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            
+            // 清除本地存储
+            localStorage.removeItem('psychAssessmentAnswers');
+        }
+
+        // 重新开始测评
+        function restartAssessment() {
+            currentPage = 0;
+            answers = new Array(questions.length).fill(null);
+            totalScore = 0;
+            
+            questionSection.style.display = 'block';
+            resultSection.style.display = 'none';
+            
+            initAssessment();
+        }
+
+        // 尝试从本地存储加载之前的答案
+        function loadSavedAnswers() {
+            const savedAnswers = localStorage.getItem('psychAssessmentAnswers');
+            if (savedAnswers) {
+                try {
+                    const parsedAnswers = JSON.parse(savedAnswers);
+                    if (Array.isArray(parsedAnswers)) {
+                        answers = parsedAnswers;
+                        
+                        // 计算已回答的问题数量
+                        const answeredCount = answers.filter(answer => answer !== null).length;
+                        if (answeredCount > 0) {
+                            // 跳转到第一个未回答的问题所在的页面
+                            const firstUnansweredIndex = answers.findIndex(answer => answer === null);
+                            if (firstUnansweredIndex !== -1) {
+                                currentPage = Math.floor(firstUnansweredIndex / questionsPerPage);
+                            }
+                            
+                            if (confirm('检测到您有未完成的测评，是否继续？')) {
+                                initAssessment();
+                                return;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('加载保存的答案失败:', e);
+                }
+            }
+            
+            // 如果没有保存的答案或用户选择重新开始，则正常初始化
+            initAssessment();
+        }
+
+        // 事件监听
+        restartBtn.addEventListener('click', restartAssessment);
+
+        // 初始化测评
+        loadSavedAnswers();
+    </script>
+</body>
+</html>
